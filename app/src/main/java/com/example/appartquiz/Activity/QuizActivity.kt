@@ -83,10 +83,10 @@ class QuizActivity : AppCompatActivity(),View.OnClickListener {
     override fun onClick(view: View?) {
 
         binding.apply {
-            btn0.setBackgroundColor(getColor(R.color.gray))
-            btn1.setBackgroundColor(getColor(R.color.gray))
-            btn2.setBackgroundColor(getColor(R.color.gray))
-            btn3.setBackgroundColor(getColor(R.color.gray))
+            btn0.setBackgroundColor(getColor(R.color.buttermilk))
+            btn1.setBackgroundColor(getColor(R.color.buttermilk))
+            btn2.setBackgroundColor(getColor(R.color.buttermilk))
+            btn3.setBackgroundColor(getColor(R.color.buttermilk))
         }
 
         val clickedBtn = view as Button
@@ -116,15 +116,17 @@ class QuizActivity : AppCompatActivity(),View.OnClickListener {
         val dialogBinding  = ScoreDialogBinding.inflate(layoutInflater)
         dialogBinding.apply {
             scoreProgressIndicator.progress = percentage
+            scoreProgressIndicator.setIndicatorColor(Color.YELLOW)
             scoreProgressText.text = "$percentage %"
             if(percentage>60){
                 scoreTitle.text = "Congrats! You have passed"
-                scoreTitle.setTextColor(Color.BLUE)
+                scoreTitle.setTextColor(Color.WHITE)
             }else{
                 scoreTitle.text = "Oops! You have failed"
-                scoreTitle.setTextColor(Color.RED)
+                scoreTitle.setTextColor(Color.WHITE)
             }
             scoreSubtitle.text = "$score out of $totalQuestions are correct"
+            scoreSubtitle.setTextColor(Color.WHITE)
             finishBtn.setOnClickListener {
                 finish()
             }

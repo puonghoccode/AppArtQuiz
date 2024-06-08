@@ -5,18 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/royal"
     android:padding="16dp"
     tools:context=".Activity.QuizActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Question 7/20"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
             android:layout_centerVertical="true"
             android:id="@+id/question_indicator_textview"/>
 
@@ -24,7 +27,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/icon_timer"
-            app:tint="@color/blue"
+            app:tint="@color/white"
             android:layout_marginEnd="4dp"
             android:layout_toStartOf="@id/timer_indicator_textview"
             android:layout_centerVertical="true"/>
@@ -35,7 +38,7 @@
             tools:text="5:46"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/blue"
+            android:textColor="@color/white"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:id="@+id/timer_indicator_textview"/>
@@ -51,13 +54,14 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
         android:elevation="4dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@color/royal"
             android:padding="16dp">
 
             <TextView
@@ -68,8 +72,8 @@
                 android:textStyle="bold"
                 android:padding="8dp"
                 android:background="@drawable/rounded_corner"
-                android:backgroundTint="@color/blue"
-                android:textColor="@color/white"
+                android:backgroundTint="@color/buttermilk"
+                android:textColor="@color/space"
                 android:gravity="center"
                 android:layout_marginVertical="8dp"
                 android:id="@+id/question_textview"/>
@@ -77,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="4dp"
-                android:backgroundTint="@color/gray"
+                android:backgroundTint="@color/buttermilk"
                 tools:text="Ans A"
                 android:textColor="@color/black"
                 android:paddingVertical="12dp"
@@ -88,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="4dp"
-                android:backgroundTint="@color/gray"
+                android:backgroundTint="@color/buttermilk"
                 tools:text="Ans B"
                 android:textColor="@color/black"
                 android:paddingVertical="12dp"
@@ -99,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="4dp"
-                android:backgroundTint="@color/gray"
+                android:backgroundTint="@color/orange"
                 tools:text="Ans C"
                 android:textColor="@color/black"
                 android:paddingVertical="12dp"
@@ -110,7 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="4dp"
-                android:backgroundTint="@color/gray"
+                android:backgroundTint="@color/buttermilk"
                 tools:text="Ans D"
                 android:textColor="@color/black"
                 android:paddingVertical="12dp"
@@ -123,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="4dp"
                 android:text="Next"
+                android:backgroundTint="@color/orange"
                 android:paddingVertical="12dp"
                 android:gravity="center_vertical"
                 android:layout_gravity="end"

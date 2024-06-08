@@ -1,29 +1,45 @@
 package com.example.appartquiz.Activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.appartquiz.Adapter.QuizListAdapter
 import com.example.appartquiz.Model.QuizModel
+import com.example.appartquiz.Model.UserModel
+import com.example.appartquiz.R
 import com.google.firebase.database.FirebaseDatabase
 import com.example.appartquiz.databinding.ActivityMainBinding
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var quizModelList : MutableList<QuizModel>
     lateinit var adapter: QuizListAdapter
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        FirebaseApp.initializeApp(this)
+
+
+        binding.settingBtn.setOnClickListener{
+            val intent = Intent(this,SettingActivity::class.java)
+            startActivity(intent)
+        }
 
         quizModelList = mutableListOf()
         getDataFromFirebase()
-
-
     }
+
 
     private fun setupRecyclerView(){
         binding.progressBar.visibility = View.GONE
@@ -47,7 +63,5 @@ class MainActivity : AppCompatActivity() {
                 }
                 setupRecyclerView()
             }
-
-
     }
 }

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:gravity="center"
     android:padding="16dp"
+    android:background="@color/royal"
     android:layout_height="wrap_content">
 
     <TextView
@@ -15,11 +16,13 @@
         android:gravity="center"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/yellow"
         android:id="@+id/score_title"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,6 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="50%"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:layout_centerInParent="true"
             android:textStyle="bold"
@@ -50,6 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Finish"
+        android:backgroundTint="@color/orange"
         android:layout_margin="8dp"
         android:id="@+id/finish_btn"/>
 

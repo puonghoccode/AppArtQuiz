@@ -4,8 +4,9 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.appartquiz.Activity.QuizActivity
+import com.bumptech.glide.Glide
 import com.example.appartquiz.Model.QuizModel
+import com.example.appartquiz.Activity.QuizActivity
 import com.example.appartquiz.databinding.QuizItemRecyclerRowBinding
 
 class QuizListAdapter(private val quizModelList : List<QuizModel>) :
@@ -13,17 +14,16 @@ class QuizListAdapter(private val quizModelList : List<QuizModel>) :
 
     class MyViewHolder(private val binding: QuizItemRecyclerRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(model : QuizModel){
-            binding.apply {
-                quizTitleText.text = model.title
-                quizSubtitleText.text = model.subtitle
-                quizTimeText.text = model.time + " min"
-                root.setOnClickListener {
-                    val intent  = Intent(root.context, QuizActivity::class.java)
-                    QuizActivity.questionModelList = model.questionList
-                    QuizActivity.time = model.time
-                    root.context.startActivity(intent)
-                }
+            binding.quizTitleText.text = model.title
+            Glide.with(binding.catImg).load(model.image).into(binding.catImg)
+            binding.quizTimeText.text = model.time + " min"
+            binding.root.setOnClickListener {
+                val intent  = Intent(binding.root.context, QuizActivity::class.java)
+                QuizActivity.questionModelList = model.questionList
+                QuizActivity.time = model.time
+                binding.root.context.startActivity(intent)
             }
+
         }
     }
 

@@ -5,9 +5,10 @@ data class QuizModel(
     val title : String,
     val subtitle : String,
     val time : String,
-    val questionList : List<QuestionModel>
+    val questionList : List<QuestionModel>,
+    val image: String
 ){
-    constructor() : this("","","","", emptyList())
+    constructor() : this("","","","", emptyList(),"")
 }
 
 data class QuestionModel(
