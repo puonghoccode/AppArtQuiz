@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/buttermilk"
+    android:gravity="center_horizontal"
+    tools:context=".Activity.IntroActivity">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/intro_bg"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ufo"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="30dp"
+            android:rotation="320"
+            android:src="@drawable/ufo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="302dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ufo">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="cursive"
+                android:textColor="@color/royal"
+                android:textSize="38sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:text="Let’s Study Art With Me" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="cursive"
+                android:textColor="@color/royal"
+                android:textSize="24sp"
+                android:gravity="center_horizontal"
+                android:text="“Every artist was first an amateur”" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="cursive"
+                android:textColor="@color/royal"
+                android:textSize="20sp"
+                android:gravity="center_horizontal"
+                android:textAllCaps="true"
+                android:text="_ Ralph Waldo Emerson _" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/buttermilk"
+        android:gravity="bottom"
+        android:paddingStart="16dp"
+        android:paddingBottom="32dp"
+        android:paddingEnd="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/toSignup"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_marginEnd="30dp"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:textSize="18sp"
+            android:backgroundTint="@color/royal"
+            android:fontFamily="serif"
+            android:text="SignUp" />
+
+        <Button
+            android:id="@+id/toLogin"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_marginStart="30dp"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:textSize="18sp"
+            android:backgroundTint="@color/royal"
+            android:fontFamily="serif"
+            android:text="LogIn" />
+
+    </LinearLayout>
+</LinearLayout>
