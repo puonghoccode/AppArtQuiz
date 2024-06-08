@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "593905806890",
+    "project_id": "appartquiz",
+    "storage_bucket": "appartquiz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:593905806890:android:9e654e81eb74e127cd5d53",
+        "android_client_info": {
+          "package_name": "com.example.appartquiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwZA1H5TmaKIYbKlT2liaaWMNPF8kbzwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
