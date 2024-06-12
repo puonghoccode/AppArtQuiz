@@ -1,8 +1,20 @@
 package com.example.appartquiz.Model
 
 data class UserModel(
-    var id : String = "",
-    var email :String = "",
-    var username:String = "",
-    var profilePic:String = "",
+    val id : String="",
+    val email :String="",
+    val username:String="",
+    val profilePic:String=""
 )
+
+/*
+data class ResultModel(
+    val category : String,
+    val percent : String,
+    val point : String,
+    val time : String,
+){
+    constructor() : this ("", "","","")
+}
+*/
+

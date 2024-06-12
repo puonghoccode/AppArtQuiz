@@ -10,12 +10,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/yellow"
         android:layout_height="100dp">
 
         <ImageView
             android:id="@+id/cat_img"
-            android:backgroundTint="@color/royal"
+            android:src="@drawable/intro_bg"
+            android:backgroundTint="@color/yellow"
             android:background="@drawable/rounded_corner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif"
-                android:textColor="@color/buttermilk"
+                android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 tools:text="Masterpiece" />
@@ -55,14 +55,14 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/icon_timer"
-                app:tint="@color/buttermilk" />
+                app:tint="@color/white" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/quiz_time_text"
                 android:fontFamily="serif"
                 android:textSize="20sp"
-                android:textColor="@color/buttermilk"
+                android:textColor="@color/white"
                 tools:text="20 min"/>
 
         </LinearLayout>

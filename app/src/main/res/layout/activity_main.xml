@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:padding="16dp"
     android:background="@color/royal"
     tools:context=".Activity.MainActivity">
 
@@ -15,42 +16,51 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/setting_btn"
-                android:layout_width="50dp"
-                android:contentDescription="@string/app_name"
-                android:layout_height="50dp"
+                android:id="@+id/app_icon"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:padding="10dp"
-                android:layout_alignParentStart="true"
+                android:clickable="true"
+                android:contentDescription="@string/app_name"
+                app:srcCompat="@drawable/hongnho" />
+
+            <ImageView
+                android:id="@+id/setting_btn"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:padding="10dp"
+                android:contentDescription="@string/app_name"
+                android:layout_alignParentEnd="true"
                 android:clickable="true"
                 android:src="@drawable/baseline_settings_24"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="cursive"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="Quiz Categories"
-                android:textColor="@color/yellow"
-                android:textSize="25sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/logout_btn"
-                android:contentDescription="@string/app_name"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding="12dp"
-                android:layout_alignParentEnd="true"
-                android:clickable="true"
-                android:src="@drawable/logout"/>
+                <TextView
+                    android:id="@+id/user_name_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="cursive"
+                    android:textColor="@color/white"
+                    android:textSize="23sp"
+                    android:textStyle="bold" />
 
         </RelativeLayout>
 
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="cursive"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Quiz Categories"
+            android:textAllCaps="true"
+            android:textColor="@color/yellow"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -68,8 +78,7 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:padding="16dp" />
+                android:layout_marginTop="16dp" />
 
         </RelativeLayout>
 

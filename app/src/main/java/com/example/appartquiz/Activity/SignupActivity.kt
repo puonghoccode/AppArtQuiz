@@ -22,6 +22,13 @@ class SignupActivity : AppCompatActivity() {
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        FirebaseAuth.getInstance().currentUser?.let { user ->
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("username", user.email?.substringBefore("@"))
+            startActivity(intent)
+            finish()
+        }
+
         binding.signupBtn.setOnClickListener {
             signup()
         }
@@ -74,7 +81,11 @@ class SignupActivity : AppCompatActivity() {
                     .set(userModel).addOnSuccessListener {
                         UiUtil.showToast(applicationContext,"Account created successfully")
                         setInProgress(false)
-                        startActivity(Intent(this,MainActivity::class.java))
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra("user_id", user.uid)
+                        intent.putExtra("user_email", email)
+                        intent.putExtra("username", email.substringBefore("@"))
+                        startActivity(intent)
                         finish()
                     }
             }
