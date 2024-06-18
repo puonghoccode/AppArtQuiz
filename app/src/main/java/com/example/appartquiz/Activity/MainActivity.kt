@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -11,61 +12,59 @@ import com.example.appartquiz.Adapter.QuizListAdapter
 import com.example.appartquiz.Model.QuizModel
 import com.example.appartquiz.Model.UserModel
 import com.example.appartquiz.R
-import com.example.appartquiz.Util.UiUtil
 import com.google.firebase.database.FirebaseDatabase
 import com.example.appartquiz.databinding.ActivityMainBinding
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
-    //quiz act
     lateinit var binding: ActivityMainBinding
     lateinit var quizModelList : MutableList<QuizModel>
     lateinit var adapter: QuizListAdapter
-
-    //setting act
+    private lateinit var welcomeTextView: TextView
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        FirebaseApp.initializeApp(this)
 
-        binding.settingBtn.setOnClickListener {
-            FirebaseAuth.getInstance().currentUser?.let { user ->
-                val intent = Intent(this, SettingActivity::class.java)
-                intent.putExtra("us er_id", user.uid)
-                intent.putExtra("username", user.email?.substringBefore("@"))
-                intent.putExtra("email", user.email)
-                startActivity(intent)
-            }
+        welcomeTextView = binding.welcomeTextView
+        firebaseAuth = FirebaseAuth.getInstance()
+        firestore = Firebase.firestore
+
+
+        binding.settingBtn.setOnClickListener{
+            val intent = Intent(this,SettingActivity::class.java)
+            startActivity(intent)
         }
 
-        setupUI()
-        initRecyclerView()
-        }
-
-    private fun setupUI() {
-        val userId = intent.getStringExtra("user_id")
-        val username = intent.getStringExtra("username")
-
-        binding.userNameTxt.text = "Welcome, $username!"
-
-        binding.settingBtn.setOnClickListener {
-            FirebaseAuth.getInstance().currentUser?.let {
-                val intent = Intent(this, SettingActivity::class.java)
-                startActivity(intent)
-            }
-        }
-    }
-
-    private fun initRecyclerView() {
         quizModelList = mutableListOf()
         getDataFromFirebase()
+        getUsernameFromFirestore()
     }
 
-    //quiz act
+    private fun getUsernameFromFirestore() {
+        val userId = firebaseAuth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users")
+                .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val userModel = document.toObject(UserModel::class.java)
+                        binding.welcomeTextView.text = "Welcome, ${userModel?.username}!"
+                    }
+                }
+        }
+    }
+
+
     private fun setupRecyclerView(){
         binding.progressBar.visibility = View.GONE
         adapter = QuizListAdapter(quizModelList)
@@ -89,5 +88,4 @@ class MainActivity : AppCompatActivity() {
                 setupRecyclerView()
             }
     }
-    //end quiz act
 }

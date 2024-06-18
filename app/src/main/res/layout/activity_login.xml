@@ -13,7 +13,7 @@
         android:id="@+id/logo"
         android:layout_width="150dp"
         android:layout_height="170dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:src="@drawable/logo_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,16 +76,34 @@
             android:hint="Password"
             android:textColorHint="@color/blue"/>
 
-        <TextView
-            android:id="@+id/forgetPw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:layout_marginTop="16dp"
-            android:fontFamily="serif"
-            android:textSize="19sp"
-            android:text="Forgot your password?"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/forgetPwtxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:fontFamily="serif"
+                android:text="Forgot password?"
+                android:textColor="@color/white"
+                android:textSize="19sp" />
+
+            <TextView
+                android:id="@+id/to_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:fontFamily="serif"
+                android:text=" Create new one!"
+                android:textColor="@color/yellow"
+                android:textSize="19sp" />
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -19,98 +19,136 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.appartquiz.databinding.ActivitySettingBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 
 class SettingActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivitySettingBinding
-    lateinit var userId:String
-    lateinit var currentUserId: String
-    lateinit var photoLauncher: ActivityResultLauncher<Intent>
+    private lateinit var binding: ActivitySettingBinding
+    private var userId: String? = null
+    private var currentUserId: String? = null
+    private lateinit var photoLauncher: ActivityResultLauncher<Intent>
+    private var profileUserModel: UserModel? = null
 
-    lateinit var profileUserModel : UserModel
-    lateinit var userName: String
-    lateinit var userEmail: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.backToMainBtn.setOnClickListener {
-            Firebase.firestore.collection("users")
-                .document(userId)
-                .get()
-                .addOnSuccessListener {
-                    FirebaseAuth.getInstance().currentUser?.let { user ->
-                        val intent = Intent(this, MainActivity::class.java)
-                        intent.putExtra("user_id", user.uid)
-                        intent.putExtra("username", user.email?.substringBefore("@"))
-                        intent.putExtra("email", user.email)
-                        startActivity(intent)
-                    }
-                }
+            finish()
         }
 
-        currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-        val userId = intent.getStringExtra("user_id")
-        val userName = intent.getStringExtra("username")
+        val mAuth = FirebaseAuth.getInstance()
+        val currentUser = mAuth.currentUser
 
-        if (userId != null && userName != null) {
-            this.currentUserId = userId
-            this.userName = userName
+        if (currentUser != null) {
+            val currentUserId = currentUser.uid
+            Log.d("DEBUG", "Current User ID: $currentUserId")
+            userId = currentUserId
+            val db = FirebaseFirestore.getInstance()
+            val userRef = db.collection("users").document(currentUserId)
+            getUserDataFromFireBase(currentUserId)
+
+            userRef.get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val document = task.result
+                    if (document != null && document.exists()) {
+                        val userId = document.getString("userId")
+                        if (userId != null) {
+                            Log.d("DEBUG", "User ID from Firestore: $userId")
+                            // Use userId here
+                        } else {
+                            Log.d("DEBUG", "User ID is null in Firestore document")
+                        }
+                    } else {
+                        Log.d("DEBUG", "User document does not exist in Firestore")
+                    }
+                } else {
+                    Log.d("DEBUG", "Error getting user document: ${task.exception}")
+                    if (task.exception is FirebaseFirestoreException) {
+                        val firestoreException = task.exception as FirebaseFirestoreException
+                        Log.d("DEBUG", "Firestore error code: ${firestoreException.code}")
+                    }
+                }
+            }
+        } else {
+            Log.d("DEBUG", "Current User is null")
+        }
+
+        photoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                uploadToFirestore(result.data?.data!!)
+            }
+        }
+
+
+        if (userId == currentUserId) {
+
+            binding.changeProfilePic.setOnClickListener {
+                checkPermissionAndPickPhoto()
+            }
+            binding.changeEmail.setOnClickListener {
+                val changeEmailIntent = Intent(this, ChangeEmailActivity::class.java)
+                startActivity(changeEmailIntent)
+            }
 
             binding.profileBtn.text = "Logout"
             binding.profileBtn.setOnClickListener {
                 logout()
             }
-            photoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    uploadToFirestore(result.data?.data!!)
-                }
-            }
-
-            getUserDataFromFireBase()
         } else {
-            Log.e("Error", "Intent extras are null")
+            // Handle the case where userId and currentUserId are not equal
         }
+
     }
 
-    fun logout() {
+    fun logout(){
         FirebaseAuth.getInstance().signOut()
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this,LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 
-    fun getUserDataFromFireBase() {
+    private fun getUserDataFromFireBase(userId: String) {
         Firebase.firestore.collection("users")
             .document(userId)
             .get()
-            .addOnSuccessListener {
-                profileUserModel = it.toObject(UserModel::class.java)!!
-                binding.usernameTxt.text = "@" + userName
-                binding.userEmailTxt.text = profileUserModel.email
-                binding.progressBar.visibility = View.VISIBLE
-
-                Glide.with(binding.profilePic).load(profileUserModel.profilePic)
-                    .apply(RequestOptions().placeholder(R.drawable.ic_account))
-                    .into(binding.profilePic)
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Error", "Error getting user data: $exception")
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    profileUserModel = document.toObject(UserModel::class.java)
+                    setUI()
+                }
             }
     }
-    fun setUI() {
-        if (profileUserModel != null) {
-            Glide.with(binding.profilePic).load(profileUserModel.profilePic)
-                .apply(RequestOptions().placeholder(R.drawable.ic_account))
-                .into(binding.profilePic)
+
+    private fun setUI() {
+        if (profileUserModel!= null) {
+            profileUserModel?.apply {
+                binding.profileUsername.text = "@" + username
+                binding.profileEmail.text = email
+                // Load profile picture using Glide
+                Glide.with(binding.profilePic)
+                    .load(profilePic)
+                    .apply(RequestOptions.circleCropTransform()
+                        .placeholder(R.drawable.ic_account) // Display ic_account if profilePic is null
+                        .error(R.drawable.ic_account) // Display ic_account if there's an error loading the image
+                    )
+                    .into(binding.profilePic)
+
+                binding.progressBar.visibility = View.GONE
+            }
         } else {
             // Handle the case where profileUserModel is null
-            Log.e("Error", "profileUserModel is null")
+            binding.profileUsername.text = "@guest"
+            Glide.with(binding.profilePic)
+                .load(R.drawable.ic_account)
+                .into(binding.profilePic)
+            binding.progressBar.visibility = View.GONE
         }
     }
 
@@ -122,31 +160,35 @@ class SettingActivity : AppCompatActivity() {
         photoRef.putFile(photoUri)
             .addOnSuccessListener {
                 photoRef.downloadUrl.addOnSuccessListener {downloadUrl->
+                    //video model store in firebase firestore
                     postToFirestore(downloadUrl.toString())
                 }
             }
     }
 
-    fun postToFirestore(url: String) {
-        Firebase.firestore.collection("users")
-            .document(userId)
-            .update("profilePic", url)
-            .addOnSuccessListener {
-                getUserDataFromFireBase()
-            }
+    fun postToFirestore(url : String){
+        currentUserId?.let {
+            Firebase.firestore.collection("users")
+                .document(it)
+                .update("profilePic",url)
+                .addOnSuccessListener {
+                    profileUserModel!!.profilePic = url
+                    setUI()
+                }
+        }
     }
 
-    fun checkPermissionAndPickPhoto() {
-        var readExternalPhoto: String = ""
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    fun checkPermissionAndPickPhoto(){
+        var readExternalPhoto : String = ""
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
             readExternalPhoto = android.Manifest.permission.READ_MEDIA_IMAGES
-        } else {
+        }else{
             readExternalPhoto = android.Manifest.permission.READ_EXTERNAL_STORAGE
         }
-        if (ContextCompat.checkSelfPermission(this, readExternalPhoto) == PackageManager.PERMISSION_GRANTED) {
+        if(ContextCompat.checkSelfPermission(this,readExternalPhoto)== PackageManager.PERMISSION_GRANTED){
             //we have permission
             openPhotoPicker()
-        } else {
+        }else{
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(readExternalPhoto),
@@ -155,8 +197,8 @@ class SettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun openPhotoPicker() {
-        var intent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+    private fun openPhotoPicker(){
+        var intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         photoLauncher.launch(intent)
     }

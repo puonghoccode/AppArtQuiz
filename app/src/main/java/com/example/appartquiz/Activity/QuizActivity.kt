@@ -116,17 +116,17 @@ class QuizActivity : AppCompatActivity(),View.OnClickListener {
         val dialogBinding  = ScoreDialogBinding.inflate(layoutInflater)
         dialogBinding.apply {
             scoreProgressIndicator.progress = percentage
-            scoreProgressIndicator.setIndicatorColor(getColor(R.color.buttermilk))
+            scoreProgressIndicator.setIndicatorColor(Color.YELLOW)
             scoreProgressText.text = "$percentage %"
             if(percentage>60){
                 scoreTitle.text = "Congrats! You have passed"
-                scoreTitle.setTextColor(getColor(R.color.yellow))
+                scoreTitle.setTextColor(Color.WHITE)
             }else{
                 scoreTitle.text = "Oops! You have failed"
-                scoreTitle.setTextColor(getColor(R.color.yellow))
+                scoreTitle.setTextColor(Color.WHITE)
             }
             scoreSubtitle.text = "$score out of $totalQuestions are correct"
-            scoreSubtitle.setTextColor(getColor(R.color.white))
+            scoreSubtitle.setTextColor(Color.WHITE)
             finishBtn.setOnClickListener {
                 finish()
             }
@@ -139,6 +139,5 @@ class QuizActivity : AppCompatActivity(),View.OnClickListener {
 
     }
 }
-
 
 

@@ -48,6 +48,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         tools:text="6 out of 10 questions are correct"
         android:gravity="center"
         android:id="@+id/score_subtitle"/>
