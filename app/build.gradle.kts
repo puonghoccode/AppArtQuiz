@@ -40,9 +40,12 @@ android {
 }
 
 dependencies {
-
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+
+    implementation("com.google.code.gson:gson:2.8.8")
+    implementation ("com.google.android.material:material:1.4.0")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("com.makeramen:roundedimageview:2.3.0")

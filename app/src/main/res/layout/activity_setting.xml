@@ -1,26 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/royal"
+    android:background="@drawable/login_bg"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".Activity.SettingActivity">
 
-    <TextView
-        android:id="@+id/back_to_main__btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:textSize="16sp"
-        android:fontFamily="serif"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
-
     <LinearLayout
+        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -76,17 +65,6 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/change_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:fontFamily="serif"
-            android:layout_margin="8dp"
-            android:textColor="@color/royal"
-            android:text="Change Email"
-            android:textSize="18sp" />
-
-        <Button
             android:id="@+id/change_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,6 +73,17 @@
             android:layout_margin="8dp"
             android:textColor="@color/royal"
             android:text="Change Username"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/change_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:fontFamily="serif"
+            android:layout_margin="8dp"
+            android:textColor="@color/royal"
+            android:text="Change Password"
             android:textSize="18sp" />
 
         <Button
@@ -108,35 +97,34 @@
             android:text="View My Results"
             android:textSize="18sp" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
             <Button
                 android:id="@+id/profile_btn"
-                android:layout_width="0dp"
-                android:layout_weight="0.5"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange"
                 android:fontFamily="serif"
-                android:layout_margin="8dp"
+                android:layout_margin="4dp"
                 android:text="Logout"
                 android:textSize="18sp" />
 
             <Button
                 android:id="@+id/delete_btn"
-                android:layout_width="0dp"
-                android:layout_weight="0.5"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_margin="4dp"
                 android:backgroundTint="@color/red"
                 android:fontFamily="serif"
                 android:text="Delete"
                 android:textSize="18sp" />
-        </LinearLayout>
 
     </LinearLayout>
-</LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_nav_menu" />
+
+</RelativeLayout>

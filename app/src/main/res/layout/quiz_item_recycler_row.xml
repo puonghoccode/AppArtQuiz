@@ -4,14 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="12dp"
+    android:layout_margin="4dp"
     android:elevation="10dp"
     app:cardCornerRadius="20dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:background="@color/yellow"
-        android:layout_height="100dp">
+        android:layout_height="90dp">
 
         <ImageView
             android:id="@+id/cat_img"
@@ -24,12 +24,10 @@
 
 
         <LinearLayout
+            android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_margin="10dp"
             android:orientation="vertical"
             android:padding="15dp">
 
@@ -38,8 +36,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif"
+                android:gravity="center_vertical"
                 android:textColor="@color/buttermilk"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 tools:text="Masterpiece" />
         </LinearLayout>
@@ -52,16 +51,17 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/icon_timer"
                 app:tint="@color/buttermilk" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/quiz_time_text"
                 android:fontFamily="serif"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textColor="@color/buttermilk"
                 tools:text="20 min"/>
 

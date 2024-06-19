@@ -1,20 +1,15 @@
 package com.example.appartquiz.Model
 
 data class QuizModel(
-    val id : String,
-    val title : String,
-    val subtitle : String,
-    val time : String,
-    val questionList : List<QuestionModel>,
-    val image: String
-){
-    constructor() : this("","","","", emptyList(),"")
-}
+    val id: String = "",
+    val image: String = "",
+    val questionList: List<QuestionModel> = emptyList(),
+    val time: String = "",
+    val title: String = ""
+)
 
 data class QuestionModel(
-    val question : String,
-    val options : List<String>,
-    val correct : String,
-){
-    constructor() : this ("", emptyList(),"")
-}
+    val question: String = "",
+    val options: List<String> = emptyList(),
+    val correct: String = ""
+)

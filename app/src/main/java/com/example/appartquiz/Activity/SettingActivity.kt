@@ -1,36 +1,31 @@
 package com.example.appartquiz.Activity
 
-import com.example.appartquiz.Model.UserModel
-import com.example.appartquiz.R
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.appartquiz.Model.UserModel
+import com.example.appartquiz.R
 import com.example.appartquiz.databinding.ActivitySettingBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 
-class SettingActivity : AppCompatActivity() {
+class SettingActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivitySettingBinding
     private var userId: String? = null
     private var currentUserId: String? = null
-    private lateinit var photoLauncher: ActivityResultLauncher<Intent>
     private var profileUserModel: UserModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,83 +33,89 @@ class SettingActivity : AppCompatActivity() {
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.backToMainBtn.setOnClickListener {
-            finish()
+        binding.changeProfilePic.setOnClickListener {
+            val changeProfilePicIntent = Intent(this, ChangeUserProfilePicActivity::class.java)
+            startActivity(changeProfilePicIntent)
         }
 
+        binding.viewResult.setOnClickListener {
+            val viewResultIntent = Intent(this, ViewResultActivity::class.java)
+            startActivity(viewResultIntent)
+        }
+
+        binding.deleteBtn.setOnClickListener {
+            confirmDeleteAccount()
+        }
+
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
 
         val mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
 
         if (currentUser != null) {
-            val currentUserId = currentUser.uid
+            currentUserId = currentUser.uid
             Log.d("DEBUG", "Current User ID: $currentUserId")
             userId = currentUserId
-            val db = FirebaseFirestore.getInstance()
-            val userRef = db.collection("users").document(currentUserId)
-            getUserDataFromFireBase(currentUserId)
+            getUserDataFromFirebase(currentUserId!!)
 
-            userRef.get().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val document = task.result
-                    if (document != null && document.exists()) {
-                        val userId = document.getString("userId")
-                        if (userId != null) {
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(currentUserId!!)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val document = task.result
+                        if (document != null && document.exists()) {
+                            val userId = document.getString("userId")
                             Log.d("DEBUG", "User ID from Firestore: $userId")
-                            // Use userId here
                         } else {
-                            Log.d("DEBUG", "User ID is null in Firestore document")
+                            Log.d("DEBUG", "User document does not exist in Firestore")
                         }
                     } else {
-                        Log.d("DEBUG", "User document does not exist in Firestore")
-                    }
-                } else {
-                    Log.d("DEBUG", "Error getting user document: ${task.exception}")
-                    if (task.exception is FirebaseFirestoreException) {
-                        val firestoreException = task.exception as FirebaseFirestoreException
-                        Log.d("DEBUG", "Firestore error code: ${firestoreException.code}")
+                        Log.d("DEBUG", "Error getting user document: ${task.exception}")
+                        if (task.exception is FirebaseFirestoreException) {
+                            val firestoreException = task.exception as FirebaseFirestoreException
+                            Log.d("DEBUG", "Firestore error code: ${firestoreException.code}")
+                        }
                     }
                 }
-            }
         } else {
             Log.d("DEBUG", "Current User is null")
         }
 
-        photoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                uploadToFirestore(result.data?.data!!)
-            }
-        }
-
-
         if (userId == currentUserId) {
-
-            binding.changeProfilePic.setOnClickListener {
-                checkPermissionAndPickPhoto()
+            binding.changeUsername.setOnClickListener {
+                val changeUserNameIntent = Intent(this, ChangeUserNameActivity::class.java)
+                startActivity(changeUserNameIntent)
             }
-            binding.changeEmail.setOnClickListener {
-                val changeEmailIntent = Intent(this, ChangeEmailActivity::class.java)
-                startActivity(changeEmailIntent)
+            binding.changePassword.setOnClickListener {
+                val changePasswordIntent = Intent(this, ChangePasswordActivity::class.java)
+                startActivity(changePasswordIntent)
             }
-
             binding.profileBtn.text = "Logout"
             binding.profileBtn.setOnClickListener {
                 logout()
             }
-        } else {
-            // Handle the case where userId and currentUserId are not equal
         }
-
     }
 
-    fun logout(){
-        FirebaseAuth.getInstance().signOut()
-        val intent = Intent(this,LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+    private fun logout() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Sign out ??")
+            .setMessage("Are you sure you want to sign out this account ?")
+            .setPositiveButton("Yes") { dialog, which ->
+                Firebase.auth.signOut()
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+            .setNegativeButton("No") { dialog, which ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
-    private fun getUserDataFromFireBase(userId: String) {
+    private fun getUserDataFromFirebase(userId: String) {
         Firebase.firestore.collection("users")
             .document(userId)
             .get()
@@ -127,23 +128,19 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun setUI() {
-        if (profileUserModel!= null) {
-            profileUserModel?.apply {
-                binding.profileUsername.text = "@" + username
-                binding.profileEmail.text = email
-                // Load profile picture using Glide
-                Glide.with(binding.profilePic)
-                    .load(profilePic)
-                    .apply(RequestOptions.circleCropTransform()
-                        .placeholder(R.drawable.ic_account) // Display ic_account if profilePic is null
-                        .error(R.drawable.ic_account) // Display ic_account if there's an error loading the image
-                    )
-                    .into(binding.profilePic)
-
-                binding.progressBar.visibility = View.GONE
-            }
-        } else {
-            // Handle the case where profileUserModel is null
+        profileUserModel?.let {
+            binding.profileUsername.text = "@${it.username}"
+            binding.profileEmail.text = it.email
+            Glide.with(binding.profilePic)
+                .load(it.profilePic)
+                .apply(
+                    RequestOptions.circleCropTransform()
+                        .placeholder(R.drawable.ic_account)
+                        .error(R.drawable.ic_account)
+                )
+                .into(binding.profilePic)
+            binding.progressBar.visibility = View.GONE
+        } ?: run {
             binding.profileUsername.text = "@guest"
             Glide.with(binding.profilePic)
                 .load(R.drawable.ic_account)
@@ -152,55 +149,64 @@ class SettingActivity : AppCompatActivity() {
         }
     }
 
-    fun uploadToFirestore(photoUri : Uri){
-        binding.progressBar.visibility = View.VISIBLE
-        val photoRef =  FirebaseStorage.getInstance()
-            .reference
-            .child("profilePic/"+ currentUserId )
-        photoRef.putFile(photoUri)
-            .addOnSuccessListener {
-                photoRef.downloadUrl.addOnSuccessListener {downloadUrl->
-                    //video model store in firebase firestore
-                    postToFirestore(downloadUrl.toString())
-                }
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.navigation_discover -> {
+                val intent = Intent(this, DiscoveryActivity::class.java)
+                startActivity(intent)
+                return true
             }
+            R.id.navigation_favorites -> {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+            R.id.navigation_settings -> {
+                // Already in settings
+                return true
+            }
+        }
+        return false
     }
 
-    fun postToFirestore(url : String){
-        currentUserId?.let {
-            Firebase.firestore.collection("users")
-                .document(it)
-                .update("profilePic",url)
+    private fun confirmDeleteAccount() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete Account ??")
+            .setMessage("Are you sure you want to delete this account? This action cannot be undone.")
+            .setPositiveButton("Yes") { dialog, which ->
+                deleteAccount()
+            }
+            .setNegativeButton("No") { dialog, which ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun deleteAccount() {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        user?.let {
+            Firebase.firestore.collection("users").document(it.uid)
+                .delete()
                 .addOnSuccessListener {
-                    profileUserModel!!.profilePic = url
-                    setUI()
+                    user.delete()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("DEBUG", "User account deleted.")
+                                val intent = Intent(this, LoginActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                Toast.makeText(this, "Account deleted successfully.", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Log.e("ERROR", "Failed to delete user account: ${task.exception?.message}")
+                                Toast.makeText(this, "Failed to delete user account.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("ERROR", "Failed to delete user data from Firestore: ${e.message}")
+                    Toast.makeText(this, "Failed to delete user data.", Toast.LENGTH_SHORT).show()
                 }
         }
     }
-
-    fun checkPermissionAndPickPhoto(){
-        var readExternalPhoto : String = ""
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            readExternalPhoto = android.Manifest.permission.READ_MEDIA_IMAGES
-        }else{
-            readExternalPhoto = android.Manifest.permission.READ_EXTERNAL_STORAGE
-        }
-        if(ContextCompat.checkSelfPermission(this,readExternalPhoto)== PackageManager.PERMISSION_GRANTED){
-            //we have permission
-            openPhotoPicker()
-        }else{
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(readExternalPhoto),
-                100
-            )
-        }
-    }
-
-    private fun openPhotoPicker(){
-        var intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.type = "image/*"
-        photoLauncher.launch(intent)
-    }
-
 }

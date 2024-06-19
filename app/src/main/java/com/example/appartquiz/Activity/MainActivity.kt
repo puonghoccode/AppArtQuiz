@@ -1,28 +1,33 @@
 package com.example.appartquiz.Activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.appartquiz.Adapter.QuizListAdapter
 import com.example.appartquiz.Model.QuizModel
 import com.example.appartquiz.Model.UserModel
 import com.example.appartquiz.R
-import com.google.firebase.database.FirebaseDatabase
 import com.example.appartquiz.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     lateinit var binding: ActivityMainBinding
-    lateinit var quizModelList : MutableList<QuizModel>
+    lateinit var quizModelList: MutableList<QuizModel>
     lateinit var adapter: QuizListAdapter
     private lateinit var welcomeTextView: TextView
     private lateinit var firebaseAuth: FirebaseAuth
@@ -38,11 +43,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         firestore = Firebase.firestore
 
-
-        binding.settingBtn.setOnClickListener{
-            val intent = Intent(this,SettingActivity::class.java)
-            startActivity(intent)
-        }
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
 
         quizModelList = mutableListOf()
         getDataFromFirebase()
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         val userId = firebaseAuth.currentUser?.uid
         if (userId != null) {
             firestore.collection("users")
-                .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                .document(userId)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
@@ -64,28 +65,53 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun setupRecyclerView(){
+    private fun setupRecyclerView() {
         binding.progressBar.visibility = View.GONE
         adapter = QuizListAdapter(quizModelList)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
     }
 
-    private fun getDataFromFirebase(){
+    private fun getDataFromFirebase() {
         binding.progressBar.visibility = View.VISIBLE
         FirebaseDatabase.getInstance().reference
-            .get()
-            .addOnSuccessListener { dataSnapshot->
-                if(dataSnapshot.exists()){
-                    for (snapshot in dataSnapshot.children){
-                        val quizModel = snapshot.getValue(QuizModel::class.java)
-                        if (quizModel != null) {
-                            quizModelList.add(quizModel)
+            .child("quizzes")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (snapshot in dataSnapshot.children) {
+                            val quizModel = snapshot.getValue(QuizModel::class.java)
+                            if (quizModel != null) {
+                                quizModelList.add(quizModel)
+                            }
                         }
                     }
+                    setupRecyclerView()
                 }
-                setupRecyclerView()
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle possible errors.
+                }
+            })
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.navigation_discover -> {
+                val intent = Intent(this, DiscoveryActivity::class.java)
+                startActivity(intent)
+                return true
             }
+            R.id.navigation_favorites -> {
+                // Handle favorites navigation
+                return true
+            }
+            R.id.navigation_settings -> {
+                val intent = Intent(this, SettingActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+        }
+        return false
     }
 }
